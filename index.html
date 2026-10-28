@@ -1,0 +1,142 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: system-ui, sans-serif;
+      background: #f4f1e8;
+      color: #172033;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 18px 12px 24px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    main {
+      width: min(100%, 440px);
+    }
+
+    #game {
+      width: 100%;
+      overflow-x: auto;
+      display: flex;
+      justify-content: center;
+    }
+
+    #game canvas {
+      display: block;
+      max-width: 100%;
+      height: auto !important;
+      border: 1px solid #c8c1b2;
+      border-bottom: 0;
+      border-radius: 8px 8px 0 0;
+      box-shadow: 0 5px 16px rgba(40, 32, 18, 0.08);
+    }
+
+    #footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+      min-height: 30px;
+      padding: 3px 7px;
+      border: 1px solid #c8c1b2;
+      border-radius: 0 0 8px 8px;
+      background: #ffe7b8;
+      box-shadow: 0 5px 16px rgba(40, 32, 18, 0.06);
+    }
+
+    #status {
+      min-width: 0;
+      font-size: 10px;
+      line-height: 1.2;
+      white-space: nowrap;
+      color: #29251e;
+    }
+
+    #controls {
+      display: flex;
+      flex: 0 0 auto;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+    }
+
+    #controls label {
+      font-size: 10px;
+      font-weight: 600;
+      color: #5b554a;
+      white-space: nowrap;
+    }
+
+    #controls input[type="color"] {
+      width: 27px;
+      height: 21px;
+      padding: 1px;
+      border: 1px solid #bdb39f;
+      border-radius: 5px;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    @media (max-width: 420px) {
+      body {
+        padding: 10px 6px 18px;
+      }
+
+      #game canvas {
+        border-radius: 5px 5px 0 0;
+      }
+
+      #footer {
+        gap: 3px;
+        padding: 3px 4px;
+      }
+
+      #status,
+      #controls label {
+        font-size: 9px;
+      }
+
+      #controls input[type="color"] {
+        width: 24px;
+        height: 20px;
+      }
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.3.2/lib/p5.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5.sound@0.4.1/dist/p5.sound.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5.quadrille/dist/p5.quadrille.min.js"></script>
+</head>
+
+<body>
+  <main>
+    <div id="game"></div>
+
+    <div id="footer">
+      <span id="status" aria-live="polite">Cargando…</span>
+      <div id="controls">
+        <label for="veil-color">Color</label>
+      </div>
+    </div>
+  </main>
+
+  <script src="sketch.js"></script>
+</body>
+</html>
