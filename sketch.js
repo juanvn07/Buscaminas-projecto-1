@@ -2,7 +2,7 @@
 'use strict';
 
 const SIZE = 20;
-const MINES = SIZE*2 ;
+const MINES = SIZE * 2;
 const CELL = 20;
 const VEIL_TONE = 'magenta';
 
@@ -11,6 +11,34 @@ let veilPicker, statusLine;
 let previousStatusLine = '';
 let history = [];
 let firstClick = true;
+
+let endingEffect = null;
+let endingSparkle = null;
+let previousGameState = 'playing';
+let sparkle;
+let effectOptions;
+
+function makeMineEffect(symbol) {
+  const effect = createQuadrille(SIZE, SIZE);
+
+  mines.visit(
+    ({ row, col }) => effect.fill(row, col, symbol),
+    '💣'
+  );
+
+  return effect;
+}
+
+function makeMineSparkle() {
+  const effect = createQuadrille(SIZE, SIZE);
+
+  mines.visit(
+    ({ row, col }) => effect.fill(row, col, sparkle),
+    '💣'
+  );
+
+  return effect;
+}
 
 function setup() {
   Quadrille.cellLength = CELL;
@@ -27,6 +55,22 @@ function setup() {
   veilPicker.input(hide);
 
   statusLine = select('#status');
+
+  effectOptions = { t: 0, origin: CENTER };
+
+  sparkle = Quadrille.factory(() => {
+    const own = random(TWO_PI);
+
+    return function (o) {
+      noStroke();
+      fill('#e07a5f');
+      circle(
+        0,
+        0,
+        CELL * (0.5 + 0.3 * sin(o.t + own))
+      );
+    };
+  });
 
   deal();
 }
@@ -49,6 +93,12 @@ function deal() {
   flags = createQuadrille(SIZE, SIZE);
   history = [];
   firstClick = true;
+
+  endingEffect = null;
+  endingSparkle = null;
+  previousGameState = 'playing';
+
+  if (effectOptions) effectOptions.t = 0;
 
   hide();
 }
@@ -118,6 +168,7 @@ function draw() {
 
   drawQuadrille(mines);
   drawQuadrille(counts);
+
   drawQuadrille(veil, {
     outline: color('lime')
   });
@@ -139,6 +190,41 @@ function draw() {
   });
 
   const state = status();
+
+  if (state !== previousGameState) {
+    previousGameState = state;
+    effectOptions.t = 0;
+
+    if (state === 'boom') {
+      endingEffect = makeMineEffect('💥');
+      endingSparkle = makeMineSparkle();
+
+    } else if (state === 'cleared') {
+      endingEffect = makeMineEffect('✨');
+      endingSparkle = makeMineSparkle();
+
+    } else {
+      endingEffect = null;
+      endingSparkle = null;
+    }
+  }
+
+  if (endingSparkle) {
+    effectOptions.t += 0.08;
+
+    drawQuadrille(endingSparkle, {
+      options: effectOptions,
+      tileDisplay: null,
+      outlineWeight: 0
+    });
+  }
+
+  if (endingEffect) {
+    drawQuadrille(endingEffect, {
+      outlineWeight: 0
+    });
+  }
+
   const mistakes = Quadrille.diff(flags, mines).order;
   const safeLeft = max(0, cover.order - mines.order);
 
